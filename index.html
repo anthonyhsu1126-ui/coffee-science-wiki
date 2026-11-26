@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>咖啡手沖科學入門｜教學簡報</title>
+  <style>
+    :root {
+      --bg: #f7f3ee;
+      --card: #ffffff;
+      --espresso: #2c1e16;
+      --roast: #6f4e37;
+      --caramel: #c88a4b;
+      --muted: #6b5e55;
+      --border: #e6dcd1;
+      --soft: #efe7dd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--espresso);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .progress-bar {
+      height: 5px;
+      background: var(--border);
+      width: 100%;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--caramel);
+      width: 12.5%;
+      transition: width 0.3s ease;
+    }
+    .deck {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 36px;
+    }
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1040px;
+      height: 100%;
+      max-height: 620px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 44px 52px;
+      box-shadow: 0 12px 32px rgba(44, 30, 22, 0.08);
+      flex-direction: column;
+      justify-content: space-between;
+      animation: fadeIn 0.25s ease;
+    }
+    .slide.active { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tag {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--roast);
+      background: var(--soft);
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    h1 { font-size: 46px; line-height: 1.25; margin-bottom: 16px; color: var(--espresso); }
+    h2 { font-size: 32px; line-height: 1.3; margin-bottom: 20px; color: var(--espresso); }
+    h3 { font-size: 20px; margin-bottom: 8px; color: var(--roast); }
+    p { font-size: 18px; line-height: 1.65; color: #3d3129; }
+    .subtitle { font-size: 21px; color: var(--muted); max-width: 720px; line-height: 1.6; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 8px; }
+    .box {
+      background: #fbf9f6;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+    }
+    .box.highlight {
+      background: #fdf6ee;
+      border-color: #e4c19a;
+    }
+    ul { padding-left: 20px; margin-top: 6px; }
+    li { font-size: 17px; line-height: 1.65; margin-bottom: 6px; color: #3d3129; }
+    .callout {
+      margin-top: 18px;
+      padding: 16px 20px;
+      border-left: 4px solid var(--caramel);
+      background: #fdf6ee;
+      border-radius: 0 10px 10px 0;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 16px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      text-align: left;
+      line-height: 1.5;
+    }
+    th { background: var(--soft); color: var(--espresso); font-weight: 700; }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .wiki-badge {
+      background: var(--soft);
+      color: var(--roast);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px 20px;
+    }
+    button {
+      background: var(--espresso);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.85; }
+    button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .counter { font-size: 15px; font-weight: 600; color: var(--muted); min-width: 72px; text-align: center; }
+    .cover-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .pill {
+      background: var(--soft);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      color: var(--espresso);
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <main class="deck">
+    <!-- Slide 1 -->
+    <section class="slide active">
+      <div style="margin: auto 0;">
+        <span class="tag">LLM Wiki 教學簡報</span>
+        <h1>咖啡手沖科學入門</h1>
+        <p class="subtitle">從「憑感覺沖咖啡」到「看得懂原理、調得出好味道」——用科學拆解萃取、變因、物理與除錯。</p>
+        <div class="cover-meta">
+          <div class="pill">1. 萃取科學與金杯標準</div>
+          <div class="pill">2. 四大關鍵變因</div>
+          <div class="pill">3. 悶蒸與注水物理</div>
+          <div class="pill">4. 風味除錯指南</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>使用鍵盤 ← / → 或下方按鈕切換投影片</span>
+        <span class="wiki-badge">Wiki 對應：wiki/index.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide">
+      <div>
+        <span class="tag">單元一｜萃取科學基礎</span>
+        <h2>咖啡裡的「酸、甜、苦」是依序溶出來的</h2>
+        <p>手沖本質上是熱水溶解咖啡粉中約 <strong>30% 可溶性物質</strong>，再依「菲克擴散定律」從粉粒內部擴散到水中的過程。不同分子的溶解速度不同：</p>
+        <div class="grid-3" style="margin-top: 20px;">
+          <div class="box">
+            <h3>前段：酸質與香氣</h3>
+            <p>有機酸與小分子芳香物質最先溶出，帶來明亮果酸與花果香。</p>
+          </div>
+          <div class="box highlight">
+            <h3>中段：甜感與圓潤</h3>
+            <p>糖類與焦糖化產物接著溶出，是平衡酸度、建立甜感的關鍵。</p>
+          </div>
+          <div class="box">
+            <h3>後段：苦味與乾澀</h3>
+            <p>大分子苦味物質與單寧最後才溶出，過多會帶來雜味與澀感。</p>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>核心觀念：</strong>手沖的目標不是把咖啡粉「全部洗乾淨」，而是在<strong>酸與甜充分釋放、苦澀剛要出現前</strong>精準停止。
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>咖啡手沖科學入門</span>
+        <span class="wiki-badge">Wiki 對應：wiki/01_extraction_basics.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide">
+      <div>
+        <span class="tag">單元一｜萃取科學基礎</span>
+        <h2>怎麼衡量一杯好咖啡？SCA 黃金杯標準</h2>
+        <p>科學上把「好不好喝」與「濃不濃」拆成兩個獨立指標，合稱黃金杯標準（Golden Cup）：</p>
+        <div class="grid-2" style="margin-top: 18px;">
+          <div class="box highlight">
+            <h3>萃取率（EY）＝ 味道平衡度</h3>
+            <p><strong>理想區間：18% ～ 22%</strong></p>
+            <ul>
+              <li><strong>&lt; 18%（萃取不足）</strong>：尖酸、空洞、青草味</li>
+              <li><strong>18%–22%（黃金區）</strong>：酸甜平衡、乾淨順口</li>
+              <li><strong>&gt; 22%（過度萃取）</strong>：苦澀、雜味、鎖喉感</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>濃度（TDS）＝ 口感厚薄度</h3>
+            <p><strong>手沖理想區間：1.15% ～ 1.35%</strong></p>
+            <ul>
+              <li>代表整杯咖啡液中「溶解物質」的比例</li>
+              <li>主要受<strong>粉水比</strong>影響（粉多水少較濃）</li>
+              <li>注意：很濃的咖啡也可能萃取不足，很淡的咖啡也可能過萃！</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>咖啡手沖科學入門</span>
+        <span class="wiki-badge">Wiki 對應：wiki/01_extraction_basics.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide">
+      <div>
+        <span class="tag">單元二｜關鍵變因控制</span>
+        <h2>影響風味的三大操作變因</h2>
+        <div class="grid-3" style="margin-top: 16px;">
+          <div class="box">
+            <h3>1. 粉水比（Brew Ratio）</h3>
+            <ul>
+              <li>黃金區間：<strong>1:15 ～ 1:17</strong></li>
+              <li>決定整杯咖啡的濃度（TDS）</li>
+              <li>例：15g 粉配 225–255ml 水</li>
+            </ul>
+          </div>
+          <div class="box highlight">
+            <h3>2. 研磨度（Grind Size）</h3>
+            <ul>
+              <li><strong>磨越細</strong>：表面積大、流速慢 → 萃取率提高</li>
+              <li><strong>磨越粗</strong>：表面積小、流速快 → 萃取率降低</li>
+              <li>調整萃取率最直接的工具</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>3. 水溫（Temperature）</h3>
+            <ul>
+              <li><strong>淺焙豆（90–94°C）</strong>：豆質硬，需高溫釋放果香</li>
+              <li><strong>中深焙（85–89°C）</strong>：結構疏鬆，低溫避免拉出焦苦</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>新手建議起手式：</strong>15g 粉、粉水比 1:15（總水量 225ml）、水溫 90°C、中細研磨，固定其中兩項再微調。
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>咖啡手沖科學入門</span>
+        <span class="wiki-badge">Wiki 對應：wiki/02_key_variables.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide">
+      <div>
+        <span class="tag">單元二｜關鍵變因控制</span>
+        <h2>超過 98% 都是水：常被忽略的水質科學</h2>
+        <p>水不只是溶劑，裡面的礦物質會直接參與化學萃取反應：</p>
+        <div class="grid-2" style="margin-top: 18px;">
+          <div class="box">
+            <h3>硬度（鈣 Ca²⁺、鎂 Mg²⁺）</h3>
+            <ul>
+              <li>鈣與鎂離子負責把咖啡中的香氣與甜感分子「抓」出來。</li>
+              <li><strong>水過硬</strong>：風味會變得鈍重、悶濁，層次打不開。</li>
+              <li>建議使用總硬度適中（約 <strong>50–100 ppm</strong>）的過濾軟水。</li>
+            </ul>
+          </div>
+          <div class="box highlight">
+            <h3>鹼度（碳酸氫鹽）</h3>
+            <ul>
+              <li>鹼度會中和咖啡中的有機酸。</li>
+              <li><strong>鹼度過高</strong>：淺焙豆的明亮果酸會被吃掉，喝起來平淡無趣。</li>
+              <li>實務口訣：<strong>「先調水質、再調研磨」</strong>，換對水往往比練手法見效更快。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>咖啡手沖科學入門</span>
+        <span class="wiki-badge">Wiki 對應：wiki/02_key_variables.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section class="slide">
+      <div>
+        <span class="tag">單元三｜悶蒸與注水物理</span>
+        <h2>為什麼要悶蒸？水流、擾動與濾杯物理</h2>
+        <div class="grid-2" style="margin-top: 12px;">
+          <div class="box highlight">
+            <h3>悶蒸（Blooming）＝ 先排氣再萃取</h3>
+            <ul>
+              <li>烘焙產生的 <strong>CO₂</strong> 會頂開熱水，不排氣會導致萃取不均。</li>
+              <li><strong>黃金參數</strong>：粉重 <strong>2～3 倍</strong>水量，靜置 <strong>20～30 秒</strong>。</li>
+              <li>新鮮豆／深焙豆排氣旺，可拉長至 35–40 秒。</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>擾動（Agitation）與濾杯旁通（Bypass）</h3>
+            <ul>
+              <li><strong>擾動</strong>：水流衝擊能打破粉粒表面的「邊界層」提高萃取，但過強會讓細粉塞住濾紙。</li>
+              <li><strong>錐形濾杯（V60）</strong>：旁通較多、流速快 → 層次明亮乾淨。</li>
+              <li><strong>平底濾杯（蛋糕）</strong>：粉層均勻、阻力穩 → 甜感高、容錯率高。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>咖啡手沖科學入門</span>
+        <span class="wiki-badge">Wiki 對應：wiki/03_pouring_physics.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section class="slide">
+      <div>
+        <span class="tag">單元四｜風味除錯指南</span>
+        <h2>喝出問題：太酸、太苦，還是通道效應？</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 22%;">狀況診斷</th>
+              <th style="width: 39%;">喝起來的感覺</th>
+              <th style="width: 39%;">常見物理原因</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>萃取不足</strong></td>
+              <td>尖酸、刺激酸、鹹味、空洞、水感重</td>
+              <td>磨太粗、水溫太低、總流速過快</td>
+            </tr>
+            <tr>
+              <td><strong>過度萃取</strong></td>
+              <td>苦澀、乾澀、鎖喉感、尾韻悶重</td>
+              <td>磨太細、水溫太高、沖煮時間過長</td>
+            </tr>
+            <tr>
+              <td><strong>通道效應<br>(Channeling)</strong></td>
+              <td><strong>又酸又苦</strong>、風味雜亂不乾淨</td>
+              <td>布粉不均、沒悶蒸、水流直接沖刷濾紙邊緣，導致水流只從裂縫狂流</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-footer">
+        <span>咖啡手沖科學入門</span>
+        <span class="wiki-badge">Wiki 對應：wiki/04_troubleshooting.md</span>
+      </div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section class="slide">
+      <div>
+        <span class="tag">總結｜新手實戰口訣</span>
+        <h2>單一變因修正公式：每次只改一件事！</h2>
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="box">
+            <h3>覺得太酸、太淡（提高萃取）</h3>
+            <ul>
+              <li><strong>第 1 步（優先）</strong>：研磨度調細一格</li>
+              <li><strong>第 2 步</strong>：水溫調高 2°C</li>
+              <li><strong>第 3 步</strong>：增加分段注水次數，拉長接觸時間</li>
+            </ul>
+          </div>
+          <div class="box highlight">
+            <h3>覺得太苦、太澀（降低萃取）</h3>
+            <ul>
+              <li><strong>第 1 步（優先）</strong>：研磨度調粗一格</li>
+              <li><strong>第 2 步</strong>：水溫調低 2°C</li>
+              <li><strong>第 3 步</strong>：水柱放輕放低，減少擾動並避免沖濾紙壁</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>記住科學手沖的核心：</strong>固定水質與粉水比 → 做好悶蒸與整平粉床（防通道效應）→ 根據味覺回饋，每次只微調一個變因，你就能穩定沖出黃金杯！
+        </div>
+      </div>
+      <div class="slide-footer">
+        <span>感謝聆聽｜所有內容皆出自本專案 LLM Wiki</span>
+        <span class="wiki-badge">Wiki 對應：wiki/04_troubleshooting.md, wiki/index.md</span>
+      </div>
+    </section>
+  </main>
+
+  <nav class="controls">
+    <button id="prevBtn" onclick="changeSlide(-1)">← 上一頁</button>
+    <span class="counter" id="counter">1 / 8</span>
+    <button id="nextBtn" onclick="changeSlide(1)">下一頁 →</button>
+  </nav>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('counter');
+    const progress = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let current = 0;
+
+    function updateSlide() {
+      slides.forEach((s, i) => s.classList.toggle('active', i === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+    }
+
+    function changeSlide(step) {
+      current = Math.max(0, Math.min(slides.length - 1, current + step));
+      updateSlide();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
